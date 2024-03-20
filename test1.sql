@@ -8,9 +8,7 @@ CREATE TABLE Rooms (
     Hostel_Name VARCHAR(255),
     Availability_status VARCHAR(50),
     Type_ID INT,
-    User_ID INT,
-    FOREIGN KEY (Type_ID) REFERENCES Room_Type(Type_ID),
-    FOREIGN KEY (User_ID) REFERENCES Users(User_ID)
+    User_ID INT
 );
 
 -- Create Users table
@@ -28,8 +26,7 @@ CREATE TABLE Guests (
     Guest_Name VARCHAR(255),
     Guest_SSN VARCHAR(50),
     Phone_No VARCHAR(50),
-    User_ID INT,
-    FOREIGN KEY (User_ID) REFERENCES Users(User_ID)
+    User_ID INT
 );
 
 -- Create Reservations table
@@ -41,10 +38,7 @@ CREATE TABLE Reservations (
     Reservation_status VARCHAR(50),
     Guest_ID INT,
     Room_ID INT,
-    Billing_ID INT,
-    FOREIGN KEY (Guest_ID) REFERENCES Guests(Guest_ID),
-    FOREIGN KEY (Room_ID) REFERENCES Rooms(Room_No),
-    FOREIGN KEY (Billing_ID) REFERENCES Billing(Billing_ID)
+    Billing_ID INT
 );
 
 -- Create Billing table
@@ -52,8 +46,7 @@ CREATE TABLE Billing (
     Billing_ID INT PRIMARY KEY,
     Total_Amount DECIMAL(10, 2),
     Payment_Status VARCHAR(50),
-    Guest_ID INT,
-    FOREIGN KEY (Guest_ID) REFERENCES Guests(Guest_ID)
+    Guest_ID INT
 );
 
 -- Create Payments table
@@ -61,8 +54,7 @@ CREATE TABLE Payments (
     Payment_ID INT PRIMARY KEY,
     Payment_Date DATE,
     Payment_method VARCHAR(50),
-    Billing_ID INT,
-    FOREIGN KEY (Billing_ID) REFERENCES Billing(Billing_ID)
+    Billing_ID INT
 );
 
 -- Create Cancellations table
@@ -70,16 +62,14 @@ CREATE TABLE Cancellations (
     Cancellation_ID INT PRIMARY KEY,
     Payment_ID INT,
     Cancellation_Status VARCHAR(50),
-    Refund_Status VARCHAR(50),
-    FOREIGN KEY (Payment_ID) REFERENCES Payments(Payment_ID)
+    Refund_Status VARCHAR(50)
 );
 
 -- Create Booking_Log table
 CREATE TABLE Booking_Log (
     Booking_Log_ID INT PRIMARY KEY,
     Booking_Date DATE,
-    Payment_ID INT,
-    FOREIGN KEY (Payment_ID) REFERENCES Payments(Payment_ID)
+    Payment_ID INT
 );
 
 -- Create Feedback table
@@ -89,9 +79,7 @@ CREATE TABLE Feedback (
     Rating INT,
     Description TEXT,
     Cancellation_ID INT,
-    Payment_ID INT,
-    FOREIGN KEY (Cancellation_ID) REFERENCES Cancellations(Cancellation_ID),
-    FOREIGN KEY (Payment_ID) REFERENCES Payments(Payment_ID)
+    Payment_ID INT
 );
 
 -- Insert data into Rooms table
@@ -152,7 +140,6 @@ INSERT INTO Payments (Payment_ID, Payment_Date, Payment_method, Billing_ID) VALU
 (2, '2024-03-21', 'PayPal', 2),
 (3, '2024-03-22', 'Cash', 3),
 (4, '2024-03-23', 'Credit Card', 4),
--- Insert data into Payments table (continued)
 (5, '2024-03-24', 'PayPal', 5),
 (6, '2024-03-25', 'Cash', 6),
 (7, '2024-03-26', 'Credit Card', 7),
@@ -160,7 +147,7 @@ INSERT INTO Payments (Payment_ID, Payment_Date, Payment_method, Billing_ID) VALU
 (9, '2024-03-28', 'Cash', 9),
 (10, '2024-03-29', 'Credit Card', 10);
 
--- Insert data into Cancellations table
+-- Insert data into Cancellations table (continued)
 INSERT INTO Cancellations (Cancellation_ID, Payment_ID, Cancellation_Status, Refund_Status) VALUES
 (1, 1, 'Cancelled', 'Refunded'),
 (2, 2, 'Cancelled', 'Not Refunded'),
@@ -198,3 +185,34 @@ INSERT INTO Feedback (Feedback_ID, Feedback_Type, Rating, Description, Cancellat
 (8, 'Service', 3, 'Average service.', 8, 8),
 (9, 'Service', 5, 'Excellent service!', 9, 9),
 (10, 'Service', 2, 'Poor service experience.', 10, 10);
+
+-- Add foreign keys after populating the tables
+
+ALTER TABLE Rooms
+ADD FOREIGN KEY (Type_ID) REFERENCES Room_Type(Type_ID),
+ADD FOREIGN KEY (User_ID) REFERENCES Users(User_ID);
+
+ALTER TABLE Guests
+ADD FOREIGN KEY (User_ID) REFERENCES Users(User_ID);
+
+ALTER TABLE Reservations
+ADD FOREIGN KEY (Guest_ID) REFERENCES Guests(Guest_ID),
+ADD FOREIGN KEY (Room_ID) REFERENCES Rooms(Room_No),
+ADD FOREIGN KEY (Billing_ID) REFERENCES Billing(Billing_ID);
+
+ALTER TABLE Billing
+ADD FOREIGN KEY (Guest_ID) REFERENCES Guests(Guest_ID);
+
+ALTER TABLE Payments
+ADD FOREIGN KEY (Billing_ID) REFERENCES Billing(Billing_ID);
+
+ALTER TABLE Cancellations
+ADD FOREIGN KEY (Payment_ID) REFERENCES Payments(Payment_ID);
+
+ALTER TABLE Booking_Log
+ADD FOREIGN KEY (Payment_ID) REFERENCES Payments(Payment_ID);
+
+ALTER TABLE Feedback
+ADD FOREIGN KEY (Cancellation_ID) REFERENCES Cancellations(Cancellation_ID),
+ADD FOREIGN KEY (Payment_ID) REFERENCES Payments(Payment_ID);
+
