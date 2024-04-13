@@ -1,2 +1,2 @@
-# dbms-project
-DBMS Project in 4th sem
+# GUEST ROOM AVAILABILITY & MANAGEMENT SYSTEM
+DBMS Group Project!
