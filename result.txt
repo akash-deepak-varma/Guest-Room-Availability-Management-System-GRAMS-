@@ -1,0 +1,123 @@
+mysql> SELECT Room.RoomNo, RoomType.TypeName, Room.AvailabilityStatus
+    -> FROM Room
+    -> INNER JOIN RoomType ON Room.TypeID = RoomType.TypeID
+    -> WHERE Room.AvailabilityStatus = 'Available';
++--------+-------------+--------------------+
+| RoomNo | TypeName    | AvailabilityStatus |
++--------+-------------+--------------------+
+|      4 | Double Room | Available          |
+|      5 | Double Room | Available          |
+|      6 | Double Room | Available          |
+|      7 | Double Room | Available          |
+|      8 | Double Room | Available          |
+|      9 | Double Room | Available          |
+|     10 | Double Room | Available          |
+|     11 | Single Room | Available          |
+|     12 | Single Room | Available          |
+|     13 | Single Room | Available          |
+|     14 | Single Room | Available          |
+|     15 | Single Room | Available          |
+|     16 | Single Room | Available          |
+|     17 | Single Room | Available          |
+|     18 | Single Room | Available          |
+|     19 | Single Room | Available          |
+|     20 | Single Room | Available          |
+|     21 | Common Room | Available          |
+|     22 | Double Room | Available          |
+|     23 | Double Room | Available          |
+|     24 | Double Room | Available          |
+|     25 | Double Room | Available          |
+|     26 | Double Room | Available          |
+|     27 | Double Room | Available          |
+|     28 | Double Room | Available          |
+|     29 | Double Room | Available          |
+|     30 | Double Room | Available          |
+|     31 | Double Room | Available          |
+|     32 | Single Room | Available          |
+|     33 | Single Room | Available          |
+|     34 | Single Room | Available          |
+|     35 | Single Room | Available          |
+|     36 | Single Room | Available          |
+|     37 | Single Room | Available          |
+|     38 | Single Room | Available          |
+|     39 | Single Room | Available          |
+|     40 | Single Room | Available          |
+|     41 | Single Room | Available          |
+|     42 | Common Room | Available          |
+|     43 | VIP Room    | Available          |
+|     44 | VIP Room    | Available          |
+|     45 | VIP Room    | Available          |
+|     46 | VIP Room    | Available          |
+|     47 | VIP Room    | Available          |
+|     48 | VIP Room    | Available          |
+|     49 | VIP Room    | Available          |
+|     50 | VIP Room    | Available          |
+|     51 | VIP Room    | Available          |
+|     52 | VIP Room    | Available          |
+|     53 | Non-AC Room | Available          |
+|     54 | Non-AC Room | Available          |
+|     55 | Non-AC Room | Available          |
+|     56 | Non-AC Room | Available          |
+|     57 | Non-AC Room | Available          |
+|     58 | Non-AC Room | Available          |
+|     59 | Non-AC Room | Available          |
+|     60 | Non-AC Room | Available          |
+|     61 | Non-AC Room | Available          |
+|     62 | AC Room     | Available          |
+|     63 | AC Room     | Available          |
+|     64 | AC Room     | Available          |
+|     65 | AC Room     | Available          |
+|     66 | AC Room     | Available          |
+|     67 | AC Room     | Available          |
+|     68 | AC Room     | Available          |
+|     69 | AC Room     | Available          |
+|     70 | AC Room     | Available          |
++--------+-------------+--------------------+
+67 rows in set (0.00 sec)
+
+
+mysql> SELECT Room.RoomNo, RoomType.TypeName, Room.AvailabilityStatus
+    -> FROM Room
+    -> INNER JOIN RoomType ON Room.TypeID = RoomType.TypeID
+    -> WHERE Room.AvailabilityStatus = 'Occupied';
++--------+-------------+--------------------+
+| RoomNo | TypeName    | AvailabilityStatus |
++--------+-------------+--------------------+
+|      1 | Double Room | Occupied           |
+|      2 | Double Room | Occupied           |
+|      3 | Double Room | Occupied           |
++--------+-------------+--------------------+
+3 rows in set (0.00 sec)
+
+
+mysql> -- Search by guest name
+mysql> SELECT Reservation.CheckINDate, Reservation.CheckOUTDate, Room.RoomNo, Guest.GuestName
+    -> FROM Reservation
+    -> INNER JOIN Guest ON Reservation.GuestID = Guest.GuestID
+    -> INNER JOIN Room ON Reservation.RoomID = Room.RoomNo
+    -> WHERE Guest.GuestName LIKE '%david%';
++-------------+--------------+--------+-----------+
+| CheckINDate | CheckOUTDate | RoomNo | GuestName |
++-------------+--------------+--------+-----------+
+| 2024-05-15  | 2024-05-25   |     23 | David     |
++-------------+--------------+--------+-----------+
+1 row in set (0.00 sec)
+
+
+mysql> -- Search by date range
+mysql> SELECT Reservation.CheckINDate, Reservation.CheckOUTDate, Room.RoomNo, Guest.GuestName
+    -> FROM Reservation
+    -> INNER JOIN Guest ON Reservation.GuestID = Guest.GuestID
+    -> INNER JOIN Room ON Reservation.RoomID = Room.RoomNo
+    -> WHERE Reservation.CheckINDate BETWEEN '2024-05-01' AND '2024-05-10'
+    ->    OR Reservation.CheckOUTDate BETWEEN '2024-05-10' AND '2024-05-10';
++-------------+--------------+--------+-----------+
+| CheckINDate | CheckOUTDate | RoomNo | GuestName |
++-------------+--------------+--------+-----------+
+| 2024-05-01  | 2024-05-10   |      1 | Alice     |
+| 2024-05-05  | 2024-05-15   |     32 | Bob       |
+| 2024-05-10  | 2024-05-20   |     11 | Charlie   |
++-------------+--------------+--------+-----------+
+3 rows in set (0.00 sec)
+
+
