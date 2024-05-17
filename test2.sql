@@ -1,337 +1,316 @@
--- Create User table
+-- User table
 CREATE TABLE User (
-    UserID VARCHAR PRIMARY KEY,
-    UserName VARCHAR,
-    Email VARCHAR,
-    PasswordHash VARCHAR,
-    Role VARCHAR
+    UserID VARCHAR(50) PRIMARY KEY,
+    UserName VARCHAR(255),
+    Email VARCHAR(255),
+    PasswordHash VARCHAR(255),
+    Role VARCHAR(50)
 );
 
--- Create Room table
+-- Room table
 CREATE TABLE Room (
     RoomNo INT PRIMARY KEY,
-    HostelName VARCHAR,
-    AvailabilityStatus VARCHAR,
-    TypeID VARCHAR,
-    UserID VARCHAR
+    HostelName VARCHAR(255),
+    AvailabilityStatus VARCHAR(50),
+    TypeID VARCHAR(50),
+    UserID VARCHAR(50)
 );
 
--- Create RoomType table
+-- RoomType table
 CREATE TABLE RoomType (
-    TypeID VARCHAR PRIMARY KEY,
-    TypeName VARCHAR,
+    TypeID VARCHAR(50) PRIMARY KEY,
+    TypeName VARCHAR(255),
     Capacity INT,
-    Price DECIMAL,
+    Price DECIMAL(10, 2),
     Image BLOB,
     Description TEXT
 );
 
--- Create Guest table
+-- Guest table
 CREATE TABLE Guest (
-    GuestID VARCHAR PRIMARY KEY,
-    GuestName VARCHAR,
-    GuestSSN VARCHAR,
-    PhoneNo VARCHAR,
-    UserID VARCHAR
+    GuestID VARCHAR(50) PRIMARY KEY,
+    GuestName VARCHAR(255),
+    GuestSSN VARCHAR(50),
+    PhoneNo VARCHAR(20),
+    UserID VARCHAR(50)
 );
 
--- Create Reservation table
+-- Reservation table
 CREATE TABLE Reservation (
-    GuestID VARCHAR,
+    GuestID VARCHAR(50),
     RoomID INT,
-    BillingID VARCHAR,
-    CheckInDate DATE,
-    CheckInTime TIME,
-    CheckOutDate DATE,
-    CheckOutTime TIME,
-    ReservationStatus VARCHAR
+    BillingID VARCHAR(50),
+    CheckINDate DATE,
+    CheckINTime TIME,
+    CheckOUTDate DATE,
+    CheckOUTTime TIME,
+    ReservationStatus VARCHAR(50)
 );
 
--- Create Billing table
+-- Billing table
 CREATE TABLE Billing (
-    BillingID VARCHAR PRIMARY KEY,
-    TotalAmount DECIMAL,
-    PaymentStatus VARCHAR,
-    GuestID VARCHAR
+    BillingID VARCHAR(50) PRIMARY KEY,
+    TotalAmount DECIMAL(10, 2),
+    PaymentStatus VARCHAR(50),
+    GuestID VARCHAR(50)
 );
 
--- Create Payment table
+-- Payment table
 CREATE TABLE Payment (
-    PaymentID VARCHAR PRIMARY KEY,
+    PaymentID VARCHAR(50) PRIMARY KEY,
     PaymentDate DATE,
-    PaymentMethod VARCHAR,
-    BillingID VARCHAR
+    PaymentMethod VARCHAR(50),
+    BillingID VARCHAR(50)
 );
 
--- Create RoomBookingLog table
+-- RoomBookingLog table
 CREATE TABLE RoomBookingLog (
-    BookingLogID VARCHAR PRIMARY KEY,
+    BookingLogID VARCHAR(50) PRIMARY KEY,
     BookingDate DATE,
     NumberOfRooms INT,
-    PaymentID VARCHAR
+    PaymentID VARCHAR(50)
 );
 
--- Create Cancellation table
+-- Cancellation table
 CREATE TABLE Cancellation (
-    CancellationID VARCHAR PRIMARY KEY,
-    PaymentID VARCHAR,
-    CancellationStatus VARCHAR,
-    RefundStatus VARCHAR
+    CancellationID VARCHAR(50) PRIMARY KEY,
+    PaymentID VARCHAR(50),
+    CancellationStatus VARCHAR(50),
+    RefundStatus VARCHAR(50)
 );
 
--- Create Feedback table
+-- Feedback table
 CREATE TABLE Feedback (
-    FeedbackID VARCHAR PRIMARY KEY,
-    FeedbackType VARCHAR,
+    FeedbackID VARCHAR(50) PRIMARY KEY,
+    FeedbackType VARCHAR(50),
     Rating INT,
     Description TEXT,
-    CancellationID VARCHAR,
-    PaymentID VARCHAR
+    CancellationID VARCHAR(50),
+    PaymentID VARCHAR(50)
 );
 
-
--- Alter User table to add foreign key constraint
-ALTER TABLE Room ADD CONSTRAINT FK_User_Room FOREIGN KEY (UserID) REFERENCES User(UserID);
-
--- Alter Room table to add foreign key constraints
-ALTER TABLE Room ADD CONSTRAINT FK_Room_RoomType FOREIGN KEY (TypeID) REFERENCES RoomType(TypeID);
-ALTER TABLE Room ADD CONSTRAINT FK_Room_User FOREIGN KEY (UserID) REFERENCES User(UserID);
-
--- Alter Guest table to add foreign key constraint
-ALTER TABLE Guest ADD CONSTRAINT FK_Guest_User FOREIGN KEY (UserID) REFERENCES User(UserID);
-
--- Alter Reservation table to add foreign key constraints
-ALTER TABLE Reservation ADD CONSTRAINT FK_Reservation_Guest FOREIGN KEY (GuestID) REFERENCES Guest(GuestID);
-ALTER TABLE Reservation ADD CONSTRAINT FK_Reservation_Room FOREIGN KEY (RoomID) REFERENCES Room(RoomNo);
-ALTER TABLE Reservation ADD CONSTRAINT FK_Reservation_Billing FOREIGN KEY (BillingID) REFERENCES Billing(BillingID);
-
--- Alter Billing table to add foreign key constraint
-ALTER TABLE Billing ADD CONSTRAINT FK_Billing_Guest FOREIGN KEY (GuestID) REFERENCES Guest(GuestID);
-
--- Alter Payment table to add foreign key constraint
-ALTER TABLE Payment ADD CONSTRAINT FK_Payment_Billing FOREIGN KEY (BillingID) REFERENCES Billing(BillingID);
-
--- Alter RoomBookingLog table to add foreign key constraint
-ALTER TABLE RoomBookingLog ADD CONSTRAINT FK_RoomBookingLog_Payment FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID);
-
--- Alter Cancellation table to add foreign key constraint
-ALTER TABLE Cancellation ADD CONSTRAINT FK_Cancellation_Payment FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID);
-
--- Alter Feedback table to add foreign key constraints
-ALTER TABLE Feedback ADD CONSTRAINT FK_Feedback_Cancellation FOREIGN KEY (CancellationID) REFERENCES Cancellation(CancellationID);
-ALTER TABLE Feedback ADD CONSTRAINT FK_Feedback_Payment FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID);
+-- RoomType table
+INSERT INTO RoomType (TypeID, TypeName, Capacity, Price, Description)
+VALUES 
+('DOUBLE', 'Double Room', 2, 200.00, 'A double occupancy room.'),
+('SINGLE', 'Single Room', 1, 200.00, 'A single occupancy room.'),
+('COMMON', 'Common Room', 5, 200.00, 'A common area for all guests.'),
+('VIP', 'VIP Room', 3, 1100.00, 'A luxurious VIP room.'),
+('NON_AC', 'Non-AC Room', 1, 450.00, 'A single occupancy non-AC room.'),
+('AC', 'AC Room', 1, 750.00, 'A single occupancy AC room.');
 
 
--- Inserting records into User table
-INSERT INTO User (UserID, UserName, Email, PasswordHash, Role) VALUES
-('1', 'John Doe', 'john@example.com', 'password123', 'Admin'),
-('2', 'Jane Smith', 'jane@example.com', 'password456', 'User'),
-('3', 'Michael Johnson', 'michael@example.com', 'password789', 'User'),
-('4', 'Emily Davis', 'emily@example.com', 'passwordabc', 'User'),
-('5', 'Christopher Brown', 'chris@example.com', 'passworddef', 'User'),
-('6', 'Jessica Wilson', 'jessica@example.com', 'passwordghi', 'User'),
-('7', 'David Martinez', 'david@example.com', 'passwordjkl', 'User'),
-('8', 'Ashley Anderson', 'ashley@example.com', 'passwordmno', 'User'),
-('9', 'Daniel Taylor', 'daniel@example.com', 'passwordpqr', 'User'),
-('10', 'Sarah Thomas', 'sarah@example.com', 'passwordstu', 'User'),
-('11', 'Matthew Jackson', 'matthew@example.com', 'passwordvwx', 'User'),
-('12', 'Olivia White', 'olivia@example.com', 'passwordyz1', 'User'),
-('13', 'Andrew Harris', 'andrew@example.com', 'password234', 'User'),
-('14', 'Emma Martin', 'emma@example.com', 'password567', 'User'),
-('15', 'James Garcia', 'james@example.com', 'password890', 'User'),
-('16', 'Madison Lopez', 'madison@example.com', 'passwordabc2', 'User'),
-('17', 'Joshua Young', 'joshua@example.com', 'passworddef3', 'User'),
-('18', 'Ava Lee', 'ava@example.com', 'passwordghi4', 'User'),
-('19', 'Logan Perez', 'logan@example.com', 'passwordjkl5', 'User'),
-('20', 'Sophia King', 'sophia@example.com', 'passwordmno6', 'User');
+-- Room table
+INSERT INTO Room (RoomNo, HostelName, AvailabilityStatus, TypeID, UserID)
+VALUES 
+-- Lotus
+-- Double Rooms
+(1, 'Lotus', 'Available', 'DOUBLE', NULL),
+(2, 'Lotus', 'Available', 'DOUBLE', NULL),
+(3, 'Lotus', 'Available', 'DOUBLE', NULL),
+(4, 'Lotus', 'Available', 'DOUBLE', NULL),
+(5, 'Lotus', 'Available', 'DOUBLE', NULL),
+(6, 'Lotus', 'Available', 'DOUBLE', NULL),
+(7, 'Lotus', 'Available', 'DOUBLE', NULL),
+(8, 'Lotus', 'Available', 'DOUBLE', NULL),
+(9, 'Lotus', 'Available', 'DOUBLE', NULL),
+(10, 'Lotus', 'Available', 'DOUBLE', NULL),
+-- Single Rooms
+(11, 'Lotus', 'Available', 'SINGLE', NULL),
+(12, 'Lotus', 'Available', 'SINGLE', NULL),
+(13, 'Lotus', 'Available', 'SINGLE', NULL),
+(14, 'Lotus', 'Available', 'SINGLE', NULL),
+(15, 'Lotus', 'Available', 'SINGLE', NULL),
+(16, 'Lotus', 'Available', 'SINGLE', NULL),
+(17, 'Lotus', 'Available', 'SINGLE', NULL),
+(18, 'Lotus', 'Available', 'SINGLE', NULL),
+(19, 'Lotus', 'Available', 'SINGLE', NULL),
+(20, 'Lotus', 'Available', 'SINGLE', NULL),
+-- Common Room
+(21, 'Lotus', 'Available', 'COMMON', NULL),
 
--- Inserting records into RoomType table
-INSERT INTO RoomType (TypeID, TypeName, Capacity, Price, Image, Description) VALUES
-('101', 'Single', 1, 50.00, NULL, 'Single occupancy room'),
-('102', 'Double', 2, 80.00, NULL, 'Double occupancy room'),
-('103', 'Suite', 4, 150.00, NULL, 'Luxurious suite with multiple rooms'),
-('104', 'Dormitory', 6, 20.00, NULL, 'Shared room with multiple beds');
+-- Banyan
+-- Double Rooms
+(22, 'Banyan', 'Available', 'DOUBLE', NULL),
+(23, 'Banyan', 'Available', 'DOUBLE', NULL),
+(24, 'Banyan', 'Available', 'DOUBLE', NULL),
+(25, 'Banyan', 'Available', 'DOUBLE', NULL),
+(26, 'Banyan', 'Available', 'DOUBLE', NULL),
+(27, 'Banyan', 'Available', 'DOUBLE', NULL),
+(28, 'Banyan', 'Available', 'DOUBLE', NULL),
+(29, 'Banyan', 'Available', 'DOUBLE', NULL),
+(30, 'Banyan', 'Available', 'DOUBLE', NULL),
+(31, 'Banyan', 'Available', 'DOUBLE', NULL),
+-- Single Rooms
+(32, 'Banyan', 'Available', 'SINGLE', NULL),
+(33, 'Banyan', 'Available', 'SINGLE', NULL),
+(34, 'Banyan', 'Available', 'SINGLE', NULL),
+(35, 'Banyan', 'Available', 'SINGLE', NULL),
+(36, 'Banyan', 'Available', 'SINGLE', NULL),
+(37, 'Banyan', 'Available', 'SINGLE', NULL),
+(38, 'Banyan', 'Available', 'SINGLE', NULL),
+(39, 'Banyan', 'Available', 'SINGLE', NULL),
+(40, 'Banyan', 'Available', 'SINGLE', NULL),
+(41, 'Banyan', 'Available', 'SINGLE', NULL),
+-- Common Room
+(42, 'Banyan', 'Available', 'COMMON', NULL),
 
--- Inserting records into Room table
-INSERT INTO Room (RoomNo, HostelName, AvailabilityStatus, TypeID, UserID) VALUES
-(101, 'Hostel A', 'Available', '101', '1'),
-(102, 'Hostel A', 'Available', '102', '1'),
-(103, 'Hostel B', 'Available', '101', '2'),
-(104, 'Hostel B', 'Available', '102', '2'),
-(105, 'Hostel C', 'Available', '103', '3'),
-(106, 'Hostel C', 'Available', '103', '3'),
-(107, 'Hostel D', 'Available', '104', '4'),
-(108, 'Hostel D', 'Available', '104', '4'),
-(109, 'Hostel E', 'Available', '101', '5'),
-(110, 'Hostel E', 'Available', '102', '5'),
-(111, 'Hostel F', 'Available', '103', '6'),
-(112, 'Hostel F', 'Available', '103', '6'),
-(113, 'Hostel G', 'Available', '104', '7'),
-(114, 'Hostel G', 'Available', '104', '7'),
-(115, 'Hostel H', 'Available', '101', '8'),
-(116, 'Hostel H', 'Available', '102', '8'),
-(117, 'Hostel I', 'Available', '103', '9'),
-(118, 'Hostel I', 'Available', '103', '9'),
-(119, 'Hostel J', 'Available', '104', '10'),
-(120, 'Hostel J', 'Available', '104', '10');
+-- Ashwatha
+-- VIP Rooms
+(43, 'Ashwatha', 'Available', 'VIP', NULL),
+(44, 'Ashwatha', 'Available', 'VIP', NULL),
+(45, 'Ashwatha', 'Available', 'VIP', NULL),
+(46, 'Ashwatha', 'Available', 'VIP', NULL),
+(47, 'Ashwatha', 'Available', 'VIP', NULL),
+(48, 'Ashwatha', 'Available', 'VIP', NULL),
+(49, 'Ashwatha', 'Available', 'VIP', NULL),
+(50, 'Ashwatha', 'Available', 'VIP', NULL),
+(51, 'Ashwatha', 'Available', 'VIP', NULL),
+(52, 'Ashwatha', 'Available', 'VIP', NULL),
+-- Non-AC Rooms
+(53, 'Ashwatha', 'Available', 'NON_AC', NULL),
+(54, 'Ashwatha', 'Available', 'NON_AC', NULL),
+(55, 'Ashwatha', 'Available', 'NON_AC', NULL),
+(56, 'Ashwatha', 'Available', 'NON_AC', NULL),
+(57, 'Ashwatha', 'Available', 'NON_AC', NULL),
+(58, 'Ashwatha', 'Available', 'NON_AC', NULL),
+(59, 'Ashwatha', 'Available', 'NON_AC', NULL),
+(60, 'Ashwatha', 'Available', 'NON_AC', NULL),
+(61, 'Ashwatha', 'Available', 'NON_AC', NULL),
+-- AC Rooms
+(62, 'Ashwatha', 'Available', 'AC', NULL),
+(63, 'Ashwatha', 'Available', 'AC', NULL),
+(64, 'Ashwatha', 'Available', 'AC', NULL),
+(65, 'Ashwatha', 'Available', 'AC', NULL),
+(66, 'Ashwatha', 'Available', 'AC', NULL),
+(67, 'Ashwatha', 'Available', 'AC', NULL),
+(68, 'Ashwatha', 'Available', 'AC', NULL),
+(69, 'Ashwatha', 'Available', 'AC', NULL),
+(70, 'Ashwatha', 'Available', 'AC', NULL);
 
--- Inserting records into Guest table
-INSERT INTO Guest (GuestID, GuestName, GuestSSN, PhoneNo, UserID) VALUES
-('1001', 'Alice Johnson', '123456789', '123-456-7890', '11'),
-('1002', 'Bob Smith', '987654321', '987-654-3210', '12'),
-('1003', 'Carol Williams', '456789123', '456-789-1230', '13'),
-('1004', 'David Brown', '321654987', '321-654-9870', '14'),
-('1005', 'Emma Jones', '789123456', '789-123-4560', '15'),
-('1006', 'Frank Miller', '654987321', '654-987-3210', '16'),
-('1007', 'Grace Davis', '987123456', '987-123-4560', '17'),
-('1008', 'Henry Wilson', '321789456', '321-789-4560', '18'),
-('1009', 'Ivy Taylor', '456321789', '456-321-7890', '19'),
-('1010', 'Jack Anderson', '789456321', '789-456-3210', '20'),
-('1011', 'Kelly Thomas', '654123789', '654-123-7890', '1'),
-('1012', 'Liam Martin', '987456123', '987-456-1230', '2'),
-('1013', 'Mia White', '123789654', '123-789-6540', '3'),
-('1014', 'Nathan Lee', '456987123', '456-987-1230', '4'),
-('1015', 'Olivia Perez', '789654123', '789-654-1230', '5'),
-('1016', 'Patrick Garcia', '123987456', '123-987-4560', '6'),
-('1017', 'Quinn King', '456321789', '456-321-7890', '7'),
-('1018', 'Rachel Hernandez', '987654321', '987-654-3210', '8'),
-('1019', 'Samuel Scott', '321456987', '321-456-9870', '9'),
-('1020', 'Taylor Phillips', '654123987', '654-123-9870', '10');
 
--- Inserting records into Reservation table
-INSERT INTO Reservation (GuestID, RoomID, BillingID, CheckInDate, CheckInTime, CheckOutDate, CheckOutTime, ReservationStatus) VALUES
-('1001', 101, '10101', '2024-05-01', '12:00:00', '2024-05-05', '10:00:00', 'Confirmed'),
-('1002', 102, '10102', '2024-05-02', '12:00:00', '2024-05-04', '10:00:00', 'Confirmed'),
-('1003', 103, '10103', '2024-05-03', '12:00:00', '2024-05-06', '10:00:00', 'Confirmed'),
-('1004', 104, '10104', '2024-05-04', '12:00:00', '2024-05-07', '10:00:00', 'Confirmed'),
-('1005', 105, '10105', '2024-05-05', '12:00:00', '2024-05-08', '10:00:00', 'Confirmed'),
-('1006', 106, '10106', '2024-05-06', '12:00:00', '2024-05-09', '10:00:00', 'Confirmed'),
-('1007', 107, '10107', '2024-05-07', '12:00:00', '2024-05-10', '10:00:00', 'Confirmed'),
-('1008', 108, '10108', '2024-05-08', '12:00:00', '2024-05-11', '10:00:00', 'Confirmed'),
-('1009', 109, '10109', '2024-05-09', '12:00:00', '2024-05-12', '10:00:00', 'Confirmed'),
-('1010', 110, '10110', '2024-05-10', '12:00:00', '2024-05-13', '10:00:00', 'Confirmed'),
-('1011', 111, '10111', '2024-05-11', '12:00:00', '2024-05-14', '10:00:00', 'Confirmed'),
-('1012', 112, '10112', '2024-05-12', '12:00:00', '2024-05-15', '10:00:00', 'Confirmed'),
-('1013', 113, '10113', '2024-05-13', '12:00:00', '2024-05-16', '10:00:00', 'Confirmed'),
-('1014', 114, '10114', '2024-05-14', '12:00:00', '2024-05-17', '10:00:00', 'Confirmed'),
-('1015', 115, '10115', '2024-05-15', '12:00:00', '2024-05-18', '10:00:00', 'Confirmed'),
-('1016', 116, '10116', '2024-05-16', '12:00:00', '2024-05-19', '10:00:00', 'Confirmed'),
-('1017', 117, '10117', '2024-05-17', '12:00:00', '2024-05-20', '10:00:00', 'Confirmed'),
-('1018', 118, '10118', '2024-05-18', '12:00:00', '2024-05-21', '10:00:00', 'Confirmed'),
-('1019', 119, '10119', '2024-05-19', '12:00:00', '2024-05-22', '10:00:00', 'Confirmed'),
-('1020', 120, '10120', '2024-05-20', '12:00:00', '2024-05-23', '10:00:00', 'Confirmed');
+-- Guest table
+INSERT INTO Guest (GuestID, GuestName, GuestSSN, PhoneNo, UserID)
+VALUES 
+('G1', 'Alice', '123456789', '1234567890', NULL),  -- Female guest in Lotus, Double Room
+('G2', 'Bob', '987654321', '9876543210', NULL),    -- Male guest in Banyan, Single Room
+('G3', 'Charlie', '456789123', '4567891230', NULL),-- Female guest in Lotus, Single Room
+('G4', 'David', '654321789', '6543217890', NULL),  -- Male guest in Banyan, Double Room
+('G5', 'Eve', '987123654', '9871236540', NULL),    -- Female guest in Ashwatha, VIP Room
+('G6', 'Frank', '321654987', '3216549870', NULL),  -- Male guest in Ashwatha, Non-AC Room
+('G7', 'Grace', '159357486', '1593574860', NULL),  -- Female guest in Lotus, Common Room
+('G8', 'Harry', '357159486', '3571594860', NULL),  -- Male guest in Banyan, Common Room
+('G9', 'Ivy', '258369147', '2583691470', NULL),    -- Female guest in Ashwatha, AC Room
+('G10', 'Jack', '369258147', '3692581470', NULL);  -- Male guest in Ashwatha, AC Room
 
--- Inserting records into Billing table
-INSERT INTO Billing (BillingID, TotalAmount, PaymentStatus, GuestID) VALUES
-('10101', 200.00, 'Paid', '1001'),
-('10102', 160.00, 'Paid', '1002'),
-('10103', 250.00, 'Paid', '1003'),
-('10104', 270.00, 'Paid', '1004'),
-('10105', 300.00, 'Paid', '1005'),
-('10106', 360.00, 'Paid', '1006'),
-('10107', 150.00, 'Paid', '1007'),
-('10108', 200.00, 'Paid', '1008'),
-('10109', 120.00, 'Paid', '1009'),
-('10110', 160.00, 'Paid', '1010'),
-('10111', 400.00, 'Paid', '1011'),
-('10112', 500.00, 'Paid', '1012'),
-('10113', 300.00, 'Paid', '1013'),
-('10114', 270.00, 'Paid', '1014'),
-('10115', 250.00, 'Paid', '1015'),
-('10116', 400.00, 'Paid', '1016'),
-('10117', 350.00, 'Paid', '1017'),
-('10118', 320.00, 'Paid', '1018'),
-('10119', 280.00, 'Paid', '1019'),
-('10120', 200.00, 'Paid', '1020');
+-- Reservation table
+INSERT INTO Reservation (GuestID, RoomID, BillingID, CheckINDate, CheckINTime, CheckOUTDate, CheckOUTTime, ReservationStatus)
+VALUES 
+('G1', 1, NULL, '2024-05-01', '12:00:00', '2024-05-10', '12:00:00', 'Confirmed'), -- Reservation for Alice in Lotus, Double Room
+('G2', 32, NULL, '2024-05-05', '12:00:00', '2024-05-15', '12:00:00', 'Confirmed'), -- Reservation for Bob in Banyan, Single Room
+('G3', 11, NULL, '2024-05-10', '12:00:00', '2024-05-20', '12:00:00', 'Confirmed'), -- Reservation for Charlie in Lotus, Single Room
+('G4', 23, NULL, '2024-05-15', '12:00:00', '2024-05-25', '12:00:00', 'Confirmed'), -- Reservation for David in Banyan, Double Room
+('G5', 43, NULL, '2024-05-20', '12:00:00', '2024-05-30', '12:00:00', 'Confirmed'), -- Reservation for Eve in Ashwatha, VIP Room
+('G6', 53, NULL, '2024-05-25', '12:00:00', '2024-06-04', '12:00:00', 'Confirmed'), -- Reservation for Frank in Ashwatha, Non-AC Room
+('G7', 21, NULL, '2024-06-01', '12:00:00', '2024-06-11', '12:00:00', 'Confirmed'), -- Reservation for Grace in Lotus, Common Room
+('G8', 42, NULL, '2024-06-05', '12:00:00', '2024-06-15', '12:00:00', 'Confirmed'), -- Reservation for Harry in Banyan, Common Room
+('G9', 62, NULL, '2024-06-10', '12:00:00', '2024-06-20', '12:00:00', 'Confirmed'), -- Reservation for Ivy in Ashwatha, AC Room
+('G10', 63, NULL, '2024-06-15', '12:00:00', '2024-06-25', '12:00:00', 'Confirmed'); -- Reservation for Jack in Ashwatha, AC Room
 
--- Inserting records into Payment table
-INSERT INTO Payment (PaymentID, PaymentDate, PaymentMethod, BillingID) VALUES
-('10001', '2024-05-05', 'Credit Card', '10101'),
-('10002', '2024-05-04', 'Debit Card', '10102'),
-('10003', '2024-05-06', 'PayPal', '10103'),
-('10004', '2024-05-07', 'Cash', '10104'),
-('10005', '2024-05-08', 'Credit Card', '10105'),
-('10006', '2024-05-09', 'Debit Card', '10106'),
-('10007', '2024-05-10', 'PayPal', '10107'),
-('10008', '2024-05-11', 'Cash', '10108'),
-('10009', '2024-05-12', 'Credit Card', '10109'),
-('10010', '2024-05-13', 'Debit Card', '10110'),
-('10011', '2024-05-14', 'PayPal', '10111'),
-('10012', '2024-05-15', 'Cash', '10112'),
-('10013', '2024-05-16', 'Credit Card', '10113'),
-('10014', '2024-05-17', 'Debit Card', '10114'),
-('10015', '2024-05-18', 'PayPal', '10115'),
-('10016', '2024-05-19', 'Cash', '10116'),
-('10017', '2024-05-20', 'Credit Card', '10117'),
-('10018', '2024-05-21', 'Debit Card', '10118'),
-('10019', '2024-05-22', 'PayPal', '10119'),
-('10020', '2024-05-23', 'Cash', '10120');
+-- Billing table
+INSERT INTO Billing (BillingID, TotalAmount, PaymentStatus, GuestID)
+VALUES 
+('B1', 1800.00, 'Unpaid', 'G1'), -- Billing for Alice
+('B2', 1000.00, 'Unpaid', 'G2'), -- Billing for Bob
+('B3', 1000.00, 'Unpaid', 'G3'), -- Billing for Charlie
+('B4', 1800.00, 'Unpaid', 'G4'), -- Billing for David
+('B5', 11000.00, 'Unpaid', 'G5'), -- Billing for Eve
+('B6', 4050.00, 'Unpaid', 'G6'), -- Billing for Frank
+('B7', 2000.00, 'Unpaid', 'G7'), -- Billing for Grace
+('B8', 1000.00, 'Unpaid', 'G8'), -- Billing for Harry
+('B9', 15000.00, 'Unpaid', 'G9'), -- Billing for Ivy
+('B10', 15000.00, 'Unpaid', 'G10'); -- Billing for Jack
 
--- Inserting records into RoomBookingLog table
-INSERT INTO RoomBookingLog (BookingLogID, BookingDate, NumberOfRooms, PaymentID) VALUES
-('20101', '2024-05-05', 1, '10001'),
-('20102', '2024-05-04', 1, '10002'),
-('20103', '2024-05-06', 1, '10003'),
-('20104', '2024-05-07', 1, '10004'),
-('20105', '2024-05-08', 1, '10005'),
-('20106', '2024-05-09', 1, '10006'),
-('20107', '2024-05-10', 1, '10007'),
-('20108', '2024-05-11', 1, '10008'),
-('20109', '2024-05-12', 1, '10009'),
-('20110', '2024-05-13', 1, '10010'),
-('20111', '2024-05-14', 1, '10011'),
-('20112', '2024-05-15', 1, '10012'),
-('20113', '2024-05-16', 1, '10013'),
-('20114', '2024-05-17', 1, '10014'),
-('20115', '2024-05-18', 1, '10015'),
-('20116', '2024-05-19', 1, '10016'),
-('20117', '2024-05-20', 1, '10017'),
-('20118', '2024-05-21', 1, '10018'),
-('20119', '2024-05-22', 1, '10019'),
-('20120', '2024-05-23', 1, '10020');
+-- Payment table
+INSERT INTO Payment (PaymentID, PaymentDate, PaymentMethod, BillingID)
+VALUES 
+('P1', '2024-05-10', 'Cash', 'B1'), -- Payment for Alice
+('P2', '2024-05-15', 'Credit Card', 'B2'), -- Payment for Bob
+('P3', '2024-05-20', 'Cash', 'B3'), -- Payment for Charlie
+('P4', '2024-05-25', 'Credit Card', 'B4'), -- Payment for David
+('P5', '2024-05-30', 'Cash', 'B5'), -- Payment for Eve
+('P6', '2024-06-04', 'Credit Card', 'B6'), -- Payment for Frank
+('P7', '2024-06-11', 'Cash', 'B7'), -- Payment for Grace
+('P8', '2024-06-15', 'Credit Card', 'B8'), -- Payment for Harry
+('P9', '2024-06-20', 'Cash', 'B9'), -- Payment for Ivy
+('P10', '2024-06-25', 'Credit Card', 'B10'); -- Payment for Jack
 
--- Inserting records into Cancellation table
-INSERT INTO Cancellation (CancellationID, PaymentID, CancellationStatus, RefundStatus) VALUES
-('30101', '10001', 'Cancelled', 'Refunded'),
-('30102', '10002', 'Cancelled', 'Refunded'),
-('30103', '10003', 'Cancelled', 'Refunded'),
-('30104', '10004', 'Cancelled', 'Refunded'),
-('30105', '10005', 'Cancelled', 'Refunded'),
-('30106', '10006', 'Cancelled', 'Refunded'),
-('30107', '10007', 'Cancelled', 'Refunded'),
-('30108', '10008', 'Cancelled', 'Refunded'),
-('30109', '10009', 'Cancelled', 'Refunded'),
-('30110', '10010', 'Cancelled', 'Refunded'),
-('30111', '10011', 'Cancelled', 'Refunded'),
-('30112', '10012', 'Cancelled', 'Refunded'),
-('30113', '10013', 'Cancelled', 'Refunded'),
-('30114', '10014', 'Cancelled', 'Refunded'),
-('30115', '10015', 'Cancelled', 'Refunded'),
-('30116', '10016', 'Cancelled', 'Refunded'),
-('30117', '10017', 'Cancelled', 'Refunded'),
-('30118', '10018', 'Cancelled', 'Refunded'),
-('30119', '10019', 'Cancelled', 'Refunded'),
-('30120', '10020', 'Cancelled', 'Refunded');
+-- RoomBookingLog table
+INSERT INTO RoomBookingLog (BookingLogID, BookingDate, NumberOfRooms, PaymentID)
+VALUES 
+('BL1', '2024-05-01', 1, 'P1'), -- Room booking log for Alice
+('BL2', '2024-05-05', 1, 'P2'), -- Room booking log for Bob
+('BL3', '2024-05-10', 1, 'P3'), -- Room booking log for Charlie
+('BL4', '2024-05-15', 1, 'P4'), -- Room booking log for David
+('BL5', '2024-05-20', 1, 'P5'), -- Room booking log for Eve
+('BL6', '2024-05-25', 1, 'P6'), -- Room booking log for Frank
+('BL7', '2024-06-01', 1, 'P7'), -- Room booking log for Grace
+('BL8', '2024-06-05', 1, 'P8'), -- Room booking log for Harry
+('BL9', '2024-06-10', 1, 'P9'), -- Room booking log for Ivy
+('BL10', '2024-06-15', 1, 'P10'); -- Room booking log for Jack
 
--- Inserting records into Feedback table
-INSERT INTO Feedback (FeedbackID, FeedbackType, Rating, Description, CancellationID, PaymentID) VALUES
-('40101', 'Service', 4, 'Great service!', '30101', NULL),
-('40102', 'Room', 5, 'Comfortable room.', '30102', NULL),
-('40103', 'Staff', 3, 'Staff could be more friendly.', '30103', NULL),
-('40104', 'Facilities', 4, 'Good facilities.', '30104', NULL),
-('40105', 'Location', 5, 'Convenient location.', '30105', NULL),
-('40106', 'Cleanliness', 4, 'Clean room.', '30106', NULL),
-('40107', 'Service', 5, 'Excellent service!', '30107', NULL),
-('40108', 'Room', 4, 'Spacious room.', '30108', NULL),
-('40109', 'Staff', 3, 'Helpful staff.', '30109', NULL),
-('40110', 'Facilities', 4, 'Well-maintained facilities.', '30110', NULL),
-('40111', 'Location', 5, 'Perfect location.', '30111', NULL),
-('40112', 'Cleanliness', 5, 'Very clean!', '30112', NULL),
-('40113', 'Service', 4, 'Polite service.', '30113', NULL),
-('40114', 'Room', 4, 'Comfortable bed.', '30114', NULL),
-('40115', 'Staff', 3, 'Efficient staff.', '30115', NULL),
-('40116', 'Facilities', 4, 'Good amenities.', '30116', NULL),
-('40117', 'Location', 5, 'Beautiful location.', '30117', NULL),
-('40118', 'Cleanliness', 5, 'Spotless!', '30118', NULL),
-('40119', 'Service', 4, 'Prompt service.', '30119', NULL),
-('40120', 'Room', 4, 'Nice view from the room.', '30120', NULL);
+-- Cancellation table
+INSERT INTO Cancellation (CancellationID, PaymentID, CancellationStatus, RefundStatus)
+VALUES 
+('C1', NULL, 'Pending', 'Not Refunded'), -- Cancellation for Alice
+('C2', NULL, 'Pending', 'Not Refunded'), -- Cancellation for Bob
+('C3', NULL, 'Pending', 'Not Refunded'), -- Cancellation for Charlie
+('C4', NULL, 'Pending', 'Not Refunded'), -- Cancellation for David
+('C5', NULL, 'Pending', 'Not Refunded'), -- Cancellation for Eve
+('C6', NULL, 'Pending', 'Not Refunded'), -- Cancellation for Frank
+('C7', NULL, 'Pending', 'Not Refunded'), -- Cancellation for Grace
+('C8', NULL, 'Pending', 'Not Refunded'), -- Cancellation for Harry
+('C9', NULL, 'Pending', 'Not Refunded'), -- Cancellation for Ivy
+('C10', NULL, 'Pending', 'Not Refunded'); -- Cancellation for Jack
+
+-- Feedback table
+INSERT INTO Feedback (FeedbackID, FeedbackType, Rating, Description, CancellationID, PaymentID)
+VALUES 
+('F1', 'Room Service', 5, 'Excellent service!', NULL, NULL), -- Feedback for Alice
+('F2', 'Room Cleanliness', 4, 'Room was clean but could be better.', NULL, NULL), -- Feedback for Bob
+('F3', 'Staff Behavior', 5, 'Staff was very polite and helpful.', NULL, NULL), -- Feedback for Charlie
+('F4', 'Facilities', 4, 'Good facilities provided.', NULL, NULL), -- Feedback for David
+('F5', 'Room Comfort', 5, 'Very comfortable room.', NULL, NULL), -- Feedback for Eve
+('F6', 'Room Service', 3, 'Service was slow.', NULL, NULL), -- Feedback for Frank
+('F7', 'Room Cleanliness', 5, 'Room was very clean.', NULL, NULL), -- Feedback for Grace
+('F8', 'Staff Behavior', 4, 'Staff was friendly.', NULL, NULL), -- Feedback for Harry
+('F9', 'Facilities', 5, 'Excellent facilities.', NULL, NULL), -- Feedback for Ivy
+('F10', 'Room Comfort', 4, 'Comfortable stay.', NULL, NULL); -- Feedback for Jack
+
+-- Adding foreign key constraints to the Reservation table
+ALTER TABLE Reservation
+ADD FOREIGN KEY (GuestID) REFERENCES Guest(GuestID),
+ADD FOREIGN KEY (RoomID) REFERENCES Room(RoomNo),
+ADD FOREIGN KEY (BillingID) REFERENCES Billing(BillingID);
+
+-- Adding foreign key constraints to the Billing table
+ALTER TABLE Billing
+ADD FOREIGN KEY (GuestID) REFERENCES Guest(GuestID);
+
+-- Adding foreign key constraints to the Payment table
+ALTER TABLE Payment
+ADD FOREIGN KEY (BillingID) REFERENCES Billing(BillingID);
+
+-- Adding foreign key constraints to the RoomBookingLog table
+ALTER TABLE RoomBookingLog
+ADD FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID);
+
+-- Adding foreign key constraints to the Cancellation table
+ALTER TABLE Cancellation
+ADD FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID);
+
+-- Adding foreign key constraints to the Feedback table
+ALTER TABLE Feedback
+ADD FOREIGN KEY (CancellationID) REFERENCES Cancellation(CancellationID),
+ADD FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID);
+
